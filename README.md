@@ -1,16 +1,28 @@
 ![Banner](media/banner.png)
 
-# ⚡ CRXJS React starter + TypeScript + TailwindCSS
+# 렌즈 (Lens)
 
-This template is for creating Chrome extension, using [Vite](https://vitejs.dev/), [CRX](https://crxjs.dev/vite-plugin/) plugin, [React](https://react.dev/), [TailwindCSS](https://tailwindcss.com/) and [TypeScript](https://www.typescriptlang.org/).
+Lens is a Chrome extension that acts as your AI-powered reading companion.
+It helps users instantly summarize, translate, proofread, and rewrite content directly on any webpage — no copy-paste required.
 
-## What this template contains?
+## 🌟 What Lens Does
 
-- Extension popup
-- Content scripts
-- Extension background
-- New tab page
-- Welcome page
+### Core Features (MVP)
+
+- **Summarize Webpages**: Generate quick, clear summaries of long articles, blogs, or research papers.
+- **Translate Instantly**: Translate text or entire pages into different languages while browsing.
+- **Proofread Text**: Fix grammar, spelling, and clarity for highlighted text.
+- **Rewrite Content**: Rewrite text in different tones or styles (casual, formal, concise, creative).
+
+### Enhancer Features (Future)
+
+- **Highlight + Right-Click Actions** → e.g., “Summarize this paragraph.”
+- **Sidebar View** → See AI results alongside the original content.
+- **History & Export** → Save or export past summaries and translations.
+- **Smart Suggestions** → Auto-detect page language and suggest translation or summarization.
+- **Sharing Options** → Copy, save, or share AI results instantly.
+
+👉 In short: Lens makes browsing smarter and more efficient by letting you transform, improve, and understand online content instantly with AI.
 
 ## How to use
 
@@ -26,15 +38,6 @@ npm run dev
 # Build extension
 npm run build
 ```
-
-## Example Usage
-
-**To use the popup**:
-
-1. Navigate to the `src/pages/popup/popup.tsx` directory.
-2. Modify the files as needed.
-3. Run npm run dev to see changes in real-time.
-4. Once satisfied, build the extension using npm run build.
 
 ## Useful Links
 

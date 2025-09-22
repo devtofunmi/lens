@@ -1,8 +1,8 @@
 {
-  "name": "crxjs-react-starter",
+  "name": "lens",
   "private": true,
-  "version": "0.0.0",
-  "description": "CRXJS React Chrome extension starter + TypeScript + TailwindCSS",
+  "version": "0.1.0",
+  "description": "Lens is a Chrome extension that acts as your AI-powered reading companion. It helps users instantly summarize, translate, proofread, and rewrite content directly on any webpage — no copy-paste required.",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

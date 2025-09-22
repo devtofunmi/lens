@@ -1,14 +1,11 @@
 import { defineManifest } from "@crxjs/vite-plugin";
-import { description, version } from "./package.json";
+import { version } from "./package.json";
 
 export default defineManifest(async (env) => ({
-  name:
-    env.mode === "stagging"
-      ? "[INTERNAL] CRXJS React Starter"
-      : "CRXJS React Starter",
+  name: "Lens",
   manifest_version: 3,
   version,
-  description,
+  description: "Lens is a Chrome extension that acts as your AI-powered reading companion. It helps users instantly summarize, translate, proofread, and rewrite content directly on any webpage — no copy-paste required.",
   action: {
     default_popup: "src/pages/popup/index.html",
   },
@@ -22,13 +19,10 @@ export default defineManifest(async (env) => ({
       js: ["src/scripts/hello.ts"],
     },
   ],
-  chrome_url_overrides: {
-    newtab: "src/pages/new-tab/index.html",
-  },
   icons: {
     "16": "src/assets/icons/16x16.png",
     "32": "src/assets/icons/32x32.png",
-    "48": "src/assets/icons/32x32.png",
+    "48": "src/assets/icons/48x48.png",
     "128": "src/assets/icons/128x128.png",
   },
 }));
