@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SummarizeIcon, TranslateIcon, ProofreadIcon, RewriteIcon, SettingsIcon, InsightIcon, BulletPointsIcon, DetailedSummaryIcon } from './icons';
+import { SummarizeIcon, TranslateIcon, ProofreadIcon, RewriteIcon, SettingsIcon, InsightIcon, BulletPointsIcon, DetailedSummaryIcon, BackIcon } from './icons';
 import { ActionButton, Spinner } from './components';
 import { usePageAction } from './hooks/usePageAction';
 
@@ -18,7 +18,7 @@ const PopupContent = () => {
   if (result) {
     return (
       <div className="w-[400px] h-[500px] flex flex-col text-white p-5 font-sans bg-gradient-to-br from-gray-900 to-black shadow-2xl">
-        <button onClick={() => { setResult(null); setView('main'); }} className="mb-4 text-sm hover:underline">Back</button>
+        <button onClick={() => { setResult(null); setView('main'); }} className="p-2 rounded-full hover:bg-white hover:bg-opacity-20 transition-colors duration-200 self-start mb-4"><BackIcon /></button>
         <div className="overflow-y-auto flex-grow">
           <p>{result}</p>
         </div>
@@ -44,8 +44,8 @@ const PopupContent = () => {
 
   const renderSummarizeView = () => (
     <div className="relative z-10 flex flex-col flex-grow">
-       <button onClick={() => setView('main')} className="mb-4 text-sm hover:underline self-start">Back</button>
-      <main className="grid grid-cols-1 gap-4 flex-grow overflow-y-auto">
+       <button onClick={() => setView('main')} className="p-2 rounded-full hover:bg-white hover:bg-opacity-20 transition-colors duration-200 self-start mb-4"><BackIcon /></button>
+      <main className="grid grid-cols-1 gap-4  overflow-y-auto">
         <ActionButton icon={<InsightIcon />} title="1-line insight" description="A very short version, like a tl;dr." onClick={() => handleAction('summarize_insight')} />
         <ActionButton icon={<BulletPointsIcon />} title="Bullet points" description="Key highlights for quick scanning." onClick={() => handleAction('summarize_bullets')} />
         <ActionButton icon={<DetailedSummaryIcon />} title="Detailed summary" description="A structured summary for deeper understanding." onClick={() => handleAction('summarize_detailed')} />
