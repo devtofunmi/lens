@@ -13,7 +13,17 @@ export const usePageAction = () => {
         chrome.scripting.executeScript(
           {
             target: { tabId },
-            func: () => document.body.innerText,
+            func: () => {
+              const selectors = ['main', 'article', '[role="main"]', '#content', '#main', '.content', '.main-content', '.post-body', '.entry-content'];
+              for (const selector of selectors) {
+                  const element = document.querySelector(selector);
+                  if (element) {
+                      return (element as HTMLElement).innerText;
+                  }
+              }
+              // Fallback to body if no main content element is found
+              return document.body.innerText;
+            },
           },
           (injectionResults) => {
             if (chrome.runtime.lastError || !injectionResults || !injectionResults[0]) {
