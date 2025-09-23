@@ -12,29 +12,51 @@
   }
 
   body {
-    @apply bg-white;
-    @apply text-zinc-950 text-base antialiased;
+    @apply bg-background text-on-background text-base antialiased;
   }
 
   /* Popup styles. */
   .popup {
-    @apply size-[400px] p-5;
+    @apply w-[400px] h-[500px] p-5;
   }
 
+  input:checked ~ .dot {
+    transform: translateX(100%);
+    background-color: #4f46e5;
+  }
+
+  /* Scrollbar styles */
+  /* For Webkit browsers (Chrome, Safari) */
   ::-webkit-scrollbar {
-    width: 8px;
+    width: 8px; /* Thin scrollbar */
   }
 
   ::-webkit-scrollbar-track {
-    background: #1a1a1a;
+    background: #cccccc; /* Specific color for light mode */
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #4a4a4a;
+    background: #cccccc; /* Specific color for light mode */
     border-radius: 4px;
   }
 
-  ::-webkit-scrollbar-thumb:hover {
-    background: #555;
+  /* Dark mode scrollbar */
+  .dark ::-webkit-scrollbar-track {
+    background: #292c31;
+  }
+
+  .dark ::-webkit-scrollbar-thumb {
+    background: #292c31;
+  }
+
+  /* For Firefox */
+  /* Note: Firefox scrollbar styling is more limited */
+  * {
+    scrollbar-width: thin; /* Thin scrollbar */
+    scrollbar-color: #cccccc #cccccc; /* thumb color track color for light mode */
+  }
+
+  .dark * {
+    scrollbar-color: #292c31 #292c31;
   }
 }
