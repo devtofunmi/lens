@@ -1,19 +1,33 @@
-const summarizeText = (text: string): string => {
-  // A very simple extractive summarizer
+const summarize = (text: string, type: 'insight' | 'bullets' | 'detailed'): string => {
   const sentences = text.split(/[.!?]/).filter(s => s.trim().length > 0);
-  
-  // If the text is short, return it as is
-  if (sentences.length <= 3) {
-    return text;
+  if (sentences.length === 0) {
+    return "Couldn't find any text to summarize.";
   }
-  
-  // Otherwise, return the first 3 sentences
-  return sentences.slice(0, 3).join('. ') + '.';
+
+  switch (type) {
+    case 'insight':
+      return sentences[0];
+    case 'bullets':
+      if (sentences.length <= 5) {
+        return sentences.map(s => `• ${s}`).join('\n');
+      }
+      // Basic scoring based on length
+      const sortedSentences = [...sentences].sort((a, b) => b.length - a.length);
+      return sortedSentences.slice(0, 5).map(s => `• ${s}`).join('\n');
+    case 'detailed':
+      if (sentences.length <= 3) {
+        return text;
+      }
+      return sentences.slice(0, 3).join('. ') + '.';
+    default:
+      return "Invalid summary type.";
+  }
 };
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === 'summarize') {
-    const summary = summarizeText(request.text);
+  if (request.action.startsWith('summarize_')) {
+    const type = request.action.split('_')[1];
+    const summary = summarize(request.text, type as any);
     sendResponse({ data: summary });
   } else if (['translate', 'proofread', 'rewrite'].includes(request.action)) {
     // Placeholder for other actions
