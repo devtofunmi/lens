@@ -28,7 +28,7 @@ const PopupContent = () => {
   if (result) {
     return (
       <div className="w-[400px] h-[500px] flex flex-col text-on-background dark:text-dark-on-background p-5 font-sans bg-background dark:bg-dark-background shadow-2xl">
-        <button onClick={() => { setResult(null); setView('main'); }} className="p-2 rounded-full hover:bg-surface-variant dark:hover:bg-dark-surface-variant transition-colors duration-200 self-start mb-4"><BackIcon /></button>
+        <button onClick={() => { setResult(null); setView('summarize'); }} className="p-2 rounded-full hover:bg-surface-variant dark:hover:bg-dark-surface-variant transition-colors duration-200 self-start mb-4"><BackIcon /></button>
         <div className="overflow-y-auto flex-grow">
           <p>{result}</p>
         </div>
