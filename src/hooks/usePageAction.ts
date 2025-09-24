@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { getPageText } from '../utils/getPageText';
+import { Action } from '../types';
 
 export const usePageAction = () => {
   const [result, setResult] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const handleAction = (action: string) => {
+  const handleAction = (action: Action) => {
     setLoading(true);
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs[0].id) {
@@ -13,17 +15,7 @@ export const usePageAction = () => {
         chrome.scripting.executeScript(
           {
             target: { tabId },
-            func: () => {
-              const selectors = ['main', 'article', '[role="main"]', '#content', '#main', '.content', '.main-content', '.post-body', '.entry-content'];
-              for (const selector of selectors) {
-                  const element = document.querySelector(selector);
-                  if (element) {
-                      return (element as HTMLElement).innerText;
-                  }
-              }
-              // Fallback to body if no main content element is found
-              return document.body.innerText;
-            },
+            func: getPageText,
           },
           (injectionResults) => {
             if (chrome.runtime.lastError || !injectionResults || !injectionResults[0]) {
