@@ -1,43 +1,43 @@
 import { useState } from 'react';
 import { getPageText } from '../utils/getPageText';
-import { Action, Language } from '../types';
+import { Action, Language, ToneOption } from '../types';
 
 export const usePageAction = () => {
   const [result, setResult] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const handleAction = (action: Action, language: Language) => {
+  const handleAction = async (action: Action, language: Language) => {
     setLoading(true);
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      if (tabs[0].id) {
-        const tabId = tabs[0].id;
+    try {
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (tab.id) {
+        const injectionResults = await chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          func: getPageText,
+        });
 
-        chrome.scripting.executeScript(
-          {
-            target: { tabId },
-            func: getPageText,
-          },
-          (injectionResults) => {
-            if (chrome.runtime.lastError || !injectionResults || !injectionResults[0]) {
-              setResult(`Error getting page text: ${chrome.runtime.lastError?.message || 'No result from script'}`);
-              setLoading(false);
-              return;
-            }
+        if (chrome.runtime.lastError || !injectionResults || !injectionResults[0]) {
+          setResult(`Error getting page text: ${'No result from script'}`);
+          return;
+        }
 
-            const pageText = injectionResults[0].result;
+        const pageText = injectionResults[0].result;
+        const response = await chrome.runtime.sendMessage({ action, text: pageText, language });
 
-            chrome.runtime.sendMessage({ action, text: pageText, language }, (response) => {
-              if (chrome.runtime.lastError) {
-                setResult(`Error from background script: ${chrome.runtime.lastError.message}`);
-              } else {
-                setResult(response.data);
-              }
-              setLoading(false);
-            });
-          }
-        );
+        const lastError = chrome.runtime.lastError;
+        if (lastError) {
+          setResult(`Error from background script: ${(lastError as any).message || 'An unknown error occurred'}`);
+        } else if (response && response.data) {
+          setResult(response.data);
+        } else {
+          setResult('No response or data from background script.');
+        }
       }
-    });
+    } catch (error: any) {
+      setResult(`An error occurred: ${error}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleTranslate = async (text: string, targetLanguage: Language, setTranslated: (translated: boolean) => void) => {
@@ -65,7 +65,7 @@ export const usePageAction = () => {
         setResult('Translator API not available.');
         setTranslated(false);
       }
-    } catch (error) {
+    } catch (error: any) {
       setResult(`Translation failed: ${error}`);
       setTranslated(false);
     } finally {
@@ -73,5 +73,53 @@ export const usePageAction = () => {
     }
   };
 
-  return { result, loading, handleAction, setResult, handleTranslate };
+  const handleRewriteTone = async (toneOption: ToneOption) => {
+    setLoading(true);
+    try {
+      if ('Rewriter' in self) {
+        const availability = await (self as any).Rewriter.availability();
+
+        if (availability === 'available') {
+          const rewriterOptions = {
+            tone: toneOption.tone,
+            length: toneOption.length,
+            format: toneOption.format || 'as-is',
+            outputLanguage: toneOption.outputLanguage,
+          };
+          const rewriter = await (self as any).Rewriter.create(rewriterOptions);
+          const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+
+          if (tab.id) {
+            const injectionResults = await chrome.scripting.executeScript({
+              target: { tabId: tab.id },
+              func: getPageText,
+            });
+
+            if (chrome.runtime.lastError || !injectionResults || !injectionResults[0]) {
+              setResult(`Error getting page text: ${'No result from script'}`);
+              return;
+            }
+
+            const pageText = injectionResults[0].result;
+            const rewrittenText = await rewriter.rewrite(pageText);
+            setResult(rewrittenText);
+          }
+        } else {
+          setResult('Rewriter not available.');
+        }
+      } else {
+        setResult('Rewriter API not available.');
+      }
+    } catch (error: any) {
+      setResult(`An error occurred during rewrite: ${error}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const clearResult = () => {
+    setResult(null);
+  };
+
+  return { result, loading, handleAction, handleTranslate, handleRewriteTone, clearResult, setResult };
 };
