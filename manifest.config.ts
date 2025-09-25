@@ -2,6 +2,7 @@ import { defineManifest } from "@crxjs/vite-plugin";
 import { version } from "./package.json";
 
 export default defineManifest(async (env) => ({
+  
   name: "Lens",
   manifest_version: 3,
   version,
