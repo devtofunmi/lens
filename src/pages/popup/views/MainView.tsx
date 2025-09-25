@@ -10,7 +10,7 @@ export const MainView = ({ setView, handleAction }: { setView: (view: View) => v
       <ActionButton icon={<SummarizeIcon />} title="Summarize" description="Get a quick summary of any webpage." onClick={() => setView('summarize')} />
       <ActionButton icon={<TranslateIcon />} title="Translate" description="Translate text into different languages." onClick={() => handleAction('translate')} />
       <ActionButton icon={<ProofreadIcon />} title="Proofread" description="Fix grammar and spelling mistakes." onClick={() => handleAction('proofread')} />
-      <ActionButton icon={<RewriteIcon />} title="Rewrite" description="Rewrite text in different tones." onClick={() => handleAction('rewrite')} />
+      <ActionButton icon={<RewriteIcon />} title="Rewrite" description="Rewrite text in different tones." onClick={() => setView('toneRewriter')} />
     </main>
     <footer className="mt-8 flex justify-end flex-shrink-0">
       <Button onClick={() => setView('settings')}>
