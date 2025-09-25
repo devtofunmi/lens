@@ -5,10 +5,11 @@ import { MainView } from './views/MainView';
 import { SummarizeView } from './views/SummarizeView';
 import { SettingsView } from './views/SettingsView';
 import { ResultView } from './views/ResultView';
+import { ToneRewriterView } from './views/ToneRewriterView'; // Import ToneRewriterView
 import { View, Theme, SummaryStyle, Language } from '../../types';
 
 const PopupContent = () => {
-  const { result, loading, handleAction, setResult, handleTranslate } = usePageAction();
+  const { result, loading, handleAction, setResult, handleTranslate, handleRewriteTone } = usePageAction();
   const [view, setView] = useState<View>('main');
   const [theme, setTheme] = useState<Theme>('dark');
   const [defaultSummaryStyle, setDefaultSummaryStyle] = useState<SummaryStyle>('bullets');
@@ -48,6 +49,7 @@ const PopupContent = () => {
       {view === 'main' && <MainView setView={setView} handleAction={(action) => handleAction(action, targetLanguage)} />}
       {view === 'summarize' && <SummarizeView setView={setView} handleAction={(action) => handleAction(action, targetLanguage)} />}
       {view === 'settings' && <SettingsView setView={setView} theme={theme} setTheme={setTheme} defaultSummaryStyle={defaultSummaryStyle} setDefaultSummaryStyle={setDefaultSummaryStyle} language={targetLanguage} setLanguage={setTargetLanguage} />}
+      {view === 'toneRewriter' && <ToneRewriterView setView={setView} targetLanguage={targetLanguage} />}
     </div>
   );
 };
