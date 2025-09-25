@@ -1,4 +1,15 @@
-export type View = 'main' | 'summarize' | 'settings';
+export type View = 'main' | 'summarize' | 'settings' | 'toneRewriter';
+
+export type RewriterTone = 'more-formal' | 'as-is' | 'more-casual';
+export type RewriterLength = 'shorter' | 'as-is' | 'longer';
+export type RewriterFormat = 'as-is' | 'markdown' | 'plain-text';
+
+export interface ToneOption {
+  tone?: RewriterTone;
+  length?: RewriterLength;
+  format?: RewriterFormat;
+  outputLanguage?: Language;
+}
 
 export type Theme = 'light' | 'dark';
 
