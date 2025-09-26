@@ -1,4 +1,4 @@
-export type View = 'main' | 'summarize' | 'settings' | 'toneRewriter';
+export type View = 'main' | 'summarize' | 'settings' | 'toneRewriter' | 'proofread';
 
 export type RewriterTone = 'more-formal' | 'as-is' | 'more-casual';
 export type RewriterLength = 'shorter' | 'as-is' | 'longer';

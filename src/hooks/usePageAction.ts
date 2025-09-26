@@ -11,13 +11,13 @@ export const usePageAction = () => {
     try {
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
       if (tab.id) {
-        const injectionResults = await chrome.scripting.executeScript({
+        const injectionResults = await chrome.scripting.executeScript<[string], void>({
           target: { tabId: tab.id },
           func: getPageText,
         });
 
         if (chrome.runtime.lastError || !injectionResults || !injectionResults[0]) {
-          setResult(`Error getting page text: ${'No result from script'}`);
+          setResult(`Error getting page text: No result from script`);
           return;
         }
 
@@ -33,8 +33,8 @@ export const usePageAction = () => {
           setResult('No response or data from background script.');
         }
       }
-    } catch (error: any) {
-      setResult(`An error occurred: ${error}`);
+    } catch (error: unknown) {
+        setResult(`An error occurred: ${error instanceof Error ? error.message : String(error)}`);
     } finally {
       setLoading(false);
     }
@@ -43,17 +43,17 @@ export const usePageAction = () => {
   const handleTranslate = async (text: string, targetLanguage: Language, setTranslated: (translated: boolean) => void) => {
     setLoading(true);
     try {
-      if ('Translator' in self) {
+      if (typeof window !== 'undefined' && 'Translator' in window) {
         const sourceLanguage = await new Promise<string>((resolve) => {
           chrome.i18n.detectLanguage(text, (result) => {
             resolve(result.languages[0].language);
           });
         });
 
-        const translatorCapabilities = await (self as any).Translator.availability({ sourceLanguage, targetLanguage });
+        const translatorCapabilities = await (window as any).Translator.availability({ sourceLanguage, targetLanguage });
 
         if (translatorCapabilities === 'available') {
-          const translator = await (self as any).Translator.create({ sourceLanguage, targetLanguage });
+          const translator = await (window as any).Translator.create({ sourceLanguage, targetLanguage });
           const translatedText = await translator.translate(text);
           setResult(translatedText);
           setTranslated(true);
@@ -62,11 +62,11 @@ export const usePageAction = () => {
           setTranslated(false);
         }
       } else {
-        setResult('Translator API not available.');
+        setResult('Translator API not available in this environment.');
         setTranslated(false);
       }
-    } catch (error: any) {
-      setResult(`Translation failed: ${error}`);
+    } catch (error: unknown) {
+      setResult(`Translation failed: ${error instanceof Error ? error.message : String(error)}`);
       setTranslated(false);
     } finally {
       setLoading(false);
@@ -76,27 +76,35 @@ export const usePageAction = () => {
   const handleRewriteTone = async (toneOption: ToneOption) => {
     setLoading(true);
     try {
-      if ('Rewriter' in self) {
-        const availability = await (self as any).Rewriter.availability();
+      if (typeof window !== 'undefined' && 'Rewriter' in window) {
+        const availability = await (window as any).Rewriter.availability();
 
         if (availability === 'available') {
-          const rewriterOptions = {
+          const outputLanguage = (!toneOption.outputLanguage || !['en', 'es', 'ja'].includes(toneOption.outputLanguage))
+            ? 'en'
+            : toneOption.outputLanguage;
+
+          const rewriterOptions: any = {
             tone: toneOption.tone,
-            length: toneOption.length,
             format: toneOption.format || 'as-is',
-            outputLanguage: toneOption.outputLanguage,
+            outputLanguage: outputLanguage,
           };
-          const rewriter = await (self as any).Rewriter.create(rewriterOptions);
+
+          if (toneOption.length) {
+            rewriterOptions.length = toneOption.length;
+          }
+
+          const rewriter = await (window as any).Rewriter.create(rewriterOptions);
           const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
           if (tab.id) {
-            const injectionResults = await chrome.scripting.executeScript({
+            const injectionResults = await chrome.scripting.executeScript<[string], void>({
               target: { tabId: tab.id },
               func: getPageText,
             });
 
             if (chrome.runtime.lastError || !injectionResults || !injectionResults[0]) {
-              setResult(`Error getting page text: ${'No result from script'}`);
+              setResult(`Error getting page text: No result from script`);
               return;
             }
 
@@ -108,10 +116,10 @@ export const usePageAction = () => {
           setResult('Rewriter not available.');
         }
       } else {
-        setResult('Rewriter API not available.');
+        setResult('Rewriter API not available in this environment.');
       }
-    } catch (error: any) {
-      setResult(`An error occurred during rewrite: ${error}`);
+    } catch (error: unknown) {
+      setResult(`An error occurred during rewrite: ${error instanceof Error ? error.message : String(error)}`);
     } finally {
       setLoading(false);
     }

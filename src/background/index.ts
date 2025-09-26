@@ -29,7 +29,17 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     const type = request.action.split('_')[1];
     const summary = summarize(request.text, type as any);
     sendResponse({ data: summary });
-  } else if (['translate', 'proofread', 'rewrite'].includes(request.action)) {
+  } else if (request.action === 'proofread') {
+    (async () => {
+      if (self.Proofreader && await self.Proofreader.isAvailable()) {
+        const proofreader = await self.Proofreader.create();
+        const result = await proofreader.proofread(request.text);
+        sendResponse({ data: result });
+      } else {
+        sendResponse({ error: 'Proofreader API is not available.' });
+      }
+    })();
+  } else if (['translate', 'rewrite'].includes(request.action)) {
     // Placeholder for other actions
     sendResponse({ data: `Action '${request.action}' is not yet implemented.` });
   } else {

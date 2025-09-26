@@ -17,12 +17,11 @@ export const ToneRewriterView: React.FC<ToneRewriterViewProps> = ({ setView, tar
   };
 
   return (
-    <div className="w-[400px] h-[500px] flex flex-col text-on-background dark:text-dark-on-background p-5 font-sans bg-background dark:bg-dark-background shadow-2xl">
+    <div className="w-[400px] h-[500px] flex flex-col text-on-background dark:text-dark-on-background p-5 font-sans">
       <div className="flex justify-between items-center mb-4">
         <Button onClick={() => setView('main')} className="self-start">
           <BackIcon />
         </Button>
-        <h2 className="text-xl font-bold">Tone Rewriting</h2>
       </div>
 
       <div className="flex flex-col space-y-4 flex-grow justify-center items-center">
